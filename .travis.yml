@@ -24,7 +24,7 @@ env:
         # to repeat them for all configurations.
         - NUMPY_VERSION=1.10
         - ASTROPY_VERSION=stable
-        - CONDA_DEPENDENCIES='bottleneck yt matplotlib'
+        - CONDA_DEPENDENCIES='yt matplotlib'
         - PIP_DEPENDENCIES='aplpy pvextractor https://github.com/radio-astro-tools/radio_beam'
     matrix:
         - SETUP_CMD='egg_info'
@@ -79,26 +79,24 @@ matrix:
           env: SETUP_CMD='test' APLPY=yes PVEXTRACTOR=yes
 
         # Try older numpy versions
-        # drop support for 1.9+3.5 because travis can't test it - python: 3.5
-        # drop support for 1.9+3.5 because travis can't test it   env: NUMPY_VERSION=1.9 SETUP_CMD='test'
         - python: 2.7
           env: NUMPY_VERSION=1.9 SETUP_CMD='test'
-        #- python: 2.7
-        #  env: NUMPY_VERSION=1.7 SETUP_CMD='test'
-        #- python: 2.7
-        #  env: NUMPY_VERSION=1.6 SETUP_CMD='test'
-        #- python: 2.7
-        #  env: NUMPY_VERSION=1.5 SETUP_CMD='test'
+        - python: 2.7
+          env: NUMPY_VERSION=1.8 SETUP_CMD='test'
 
         # Test with bottleneck
+        # with all optional dependencies
         - python: 2.7
-          env: ASTROPY_VERSION=stable SETUP_CMD='test' bottleneck=yes NUMPY_VERSION=1.9
-        # drop support for 1.9+3.5 because travis can't test it - python: 3.5
-        # drop support for 1.9+3.5 because travis can't test it   env: ASTROPY_VERSION=stable SETUP_CMD='test' bottleneck=yes NUMPY_VERSION=1.9
-        - python: 2.7
-          env: ASTROPY_VERSION=stable SETUP_CMD='test' bottleneck=yes NUMPY_VERSION=1.10
+          env: ASTROPY_VERSION=stable SETUP_CMD='test' NUMPY_VERSION=1.9
+               CONDA_DEPENDENCIES+=' bottleneck'
         - python: 3.5
-          env: ASTROPY_VERSION=stable SETUP_CMD='test' bottleneck=yes NUMPY_VERSION=1.10
+          env: ASTROPY_VERSION=stable SETUP_CMD='test' NUMPY_VERSION=1.10
+               CONDA_DEPENDENCIES+=' bottleneck'
+        # with no optional dependencies
+        - python: 3.5
+          env: ASTROPY_VERSION=stable SETUP_CMD='test' NUMPY_VERSION=1.10
+               CONDA_DEPENDENCIES='bottleneck'
+               PIP_DEPENDENCIES=''
 
 before_install:
     # Make sure that interactive matplotlib backends work
@@ -110,9 +108,6 @@ before_install:
 install:
     - git clone git://github.com/astropy/ci-helpers.git
     - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
-
-    # Bottleneck
-    - if [[ $SETUP_CMD != egg_info ]] && [[ $BOTTLENECK == yes ]] && [[ $NUMPY_VERSION == 1.10  || $NUMPY_VERSION == 1.9 ]]; then $CONDA_INSTALL --channel https://conda.binstar.org/asmeurer bottleneck; fi
 
 script:
     - if [[ $SETUP_CMD != 'egg_info' ]]; then
