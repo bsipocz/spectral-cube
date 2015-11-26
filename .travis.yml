@@ -24,7 +24,7 @@ env:
         # to repeat them for all configurations.
         - NUMPY_VERSION=1.10
         - ASTROPY_VERSION=stable
-        - CONDA_DEPENDENCIES='yt matplotlib'
+        - CONDA_DEPENDENCIES='matplotlib'
         - PIP_DEPENDENCIES='aplpy pvextractor https://github.com/radio-astro-tools/radio_beam'
     matrix:
         # Make sure that egg_info works without dependencies
@@ -32,17 +32,20 @@ env:
 
         # Try all python versions with the latest numpy
         - SETUP_CMD='test'
+
 matrix:
     include:
 
         # Do a coverage test in Python 2.
         - python: 2.7
           env: SETUP_CMD='test --coverage'
+               CONDA_DEPENDENCIES+=' yt'
 
         # Check for sphinx doc build warnings - we do this first because it
         # may run for a long time
         - python: 2.7
           env: SETUP_CMD='build_sphinx -w'
+               CONDA_DEPENDENCIES+=' yt'
 
         # Try Astropy development version
         - python: 2.7
@@ -83,12 +86,18 @@ matrix:
           env: NUMPY_VERSION=1.8 SETUP_CMD='test'
                CONDA_DEPENDENCIES=''
                PIP_DEPENDENCIES=''
+        # Check yt with 3.5 and older numpy
+        - python: 3.5
+          env: NUMPY_VERSION=1.9 SETUP_CMD='test'
+               CONDA_DEPENDENCIES='yt'
+               PIP_DEPENDENCIES=''
 
         # Test with bottleneck
         # with all optional dependencies
         - python: 2.7
           env: ASTROPY_VERSION=stable SETUP_CMD='test' NUMPY_VERSION=1.9
                CONDA_DEPENDENCIES+=' bottleneck'
+               CONDA_DEPENDENCIES+=' yt'
         - python: 3.5
           env: ASTROPY_VERSION=stable SETUP_CMD='test' NUMPY_VERSION=1.10
                CONDA_DEPENDENCIES+=' bottleneck'
