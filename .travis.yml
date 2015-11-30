@@ -77,13 +77,9 @@ matrix:
                CONDA_DEPENDENCIES=''
                PIP_DEPENDENCIES=''
 
-        # Try older numpy versions
+        # Try older numpy versions. Code uses np.nanmedian, so np has to be >1.9
         - python: 2.7
           env: NUMPY_VERSION=1.9 SETUP_CMD='test'
-               CONDA_DEPENDENCIES=''
-               PIP_DEPENDENCIES=''
-        - python: 2.7
-          env: NUMPY_VERSION=1.8 SETUP_CMD='test'
                CONDA_DEPENDENCIES=''
                PIP_DEPENDENCIES=''
         # Check yt with 3.5 and older numpy
@@ -95,14 +91,14 @@ matrix:
         # Test with bottleneck
         # with all optional dependencies
         - python: 2.7
-          env: ASTROPY_VERSION=stable SETUP_CMD='test' NUMPY_VERSION=1.9
+          env: SETUP_CMD='test' NUMPY_VERSION=1.9
                CONDA_DEPENDENCIES='matplotlib yt bottleneck'
         - python: 3.5
-          env: ASTROPY_VERSION=stable SETUP_CMD='test' NUMPY_VERSION=1.10
+          env: SETUP_CMD='test' NUMPY_VERSION=1.10
                CONDA_DEPENDENCIES='matplotlib bottleneck'
         # with no optional dependencies
         - python: 3.5
-          env: ASTROPY_VERSION=stable SETUP_CMD='test' NUMPY_VERSION=1.10
+          env: SETUP_CMD='test' NUMPY_VERSION=1.10
                CONDA_DEPENDENCIES='bottleneck'
                PIP_DEPENDENCIES=''
 
